@@ -7,8 +7,11 @@ A su vez, el objetivo del TFG "Técnicas de Aprendizaje Automático para la pred
 # Tareas realizadas
 - Importación de las dos fuentes de datos. (Histórico de consumo y datos climatológicos)
 - Preprocesado de la primera fuente de datos (visualización, manipulación y detección/eliminación de outliers).
+- Unión de las dos fuentes de datos
+- Predecir utilizando un modelo base ingenuo y un modelo base ingenuo estacional
+- Descomposición de la serie temporal
+- Generación de diferentes modelos MLP.
 
 # Tareas pendientes
-- Añadir el notebook en el que se genera un modelo MLP capaz de predecir el consumo de agua.
 - Crear más modelos de diferentes tipos.
 - Comparar todos los modelos y seleccionar el mejor.
