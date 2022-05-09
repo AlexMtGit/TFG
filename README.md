@@ -11,7 +11,9 @@ A su vez, el objetivo del TFG "Técnicas de Aprendizaje Automático para la pred
 - Predecir utilizando un modelo base ingenuo y un modelo base ingenuo estacional
 - Descomposición de la serie temporal
 - Generación de diferentes modelos MLP.
+- Generación de diferentes modelos CNN.
+- Generación de diferentes modelos LSTM.
 
 # Tareas pendientes
-- Crear más modelos de diferentes tipos.
+- ¿Probar una búsqueda de hiper-parámetros más exhaustiva en un server con GPUs?
 - Comparar todos los modelos y seleccionar el mejor.
