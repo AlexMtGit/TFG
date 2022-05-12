@@ -222,75 +222,28 @@ def get_MAPE(model, X_val, y_true, epsilon = 0.00000001):
         
     MAPE = (100/len(y_true))*np.sum(np.abs((y_true - y_pred)/y_true))
     return MAPE      
-
-def crear_tabla_errores_cv_train(df, train_size_, test_size_,modelo,nombre,cv):
-
-    nombre_filas = [('Pliegue ' + str(i)) for i in range(1,11)]
-
-    metricas = ['neg_root_mean_squared_error', 'neg_median_absolute_error']
-    
-    X_train, X_test, y_train, y_test = split_train_test(df,train_size_,test_size_,scale=True,verbose=False)
-    
-    # Obtenemos los ''scores'', donde encontraremos los errores RMSE y MAE
-    scores = cross_validate(modelo, X_train, y_train, cv = cv, scoring = metricas)    
-    RMSEs_train = []
-    MAEs_train = []
-    # Los añadimos a la lista
-    RMSEs_train.append((-1) * scores['test_neg_root_mean_squared_error'])
-    MAEs_train.append((-1) * scores['test_neg_median_absolute_error'])
-    
-    
-    MAPEs_train = [cross_val_score(modelo, X_train, y_train, cv=cv, scoring = get_MAPE)]
-
-    # Creamos un dataframe vacío con columnas los modelos y diez filas, correspondientes a los pliegues
-    dfRMSE = pd.DataFrame(0, columns = [nombre], index = nombre_filas)
-    # Le añadimos nombre al índice
-    dfRMSE.index.name = 'Pliegues'
-    # Colocamos los errores correspondientes a cada modelo en su columna
-    for i in range(0, 1):
-        dfRMSE.iloc[:,i] = RMSEs_train[i]
-
-    # Creamos un dataframe vacío con columnas los modelos y diez filas, correspondientes a los pliegues
-    dfMAE = pd.DataFrame(0, columns = [nombre], index = nombre_filas)
-    # Le añadimos nombre al índice
-    dfMAE.index.name = 'Pliegues'
-    # Colocamos los errores correspondientes a cada modelo en su columna
-    for i in range(0, 1):
-        dfMAE.iloc[:,i] = MAEs_train[i]
-
-    # Creamos un dataframe vacío con columnas los modelos y diez filas, correspondientes a los pliegues
-    dfMAPE = pd.DataFrame(0, columns = [nombre], index = nombre_filas)
-    # Le añadimos nombre al índice
-    dfMAPE.index.name = 'Pliegues'
-    # Colocamos los errores correspondientes a cada modelo en su columna
-    for i in range(0, 1):
-        dfMAPE.iloc[:,i] = MAPEs_train[i]
-
-    return dfRMSE,dfMAE,dfMAPE
         
 
-def crear_tabla_errores_cv_train_deep(best_estimator, X_train, y_train, cv, nombre):
+def crear_tabla_errores_cv_train(best_estimator, X_train, y_train, cv, nombre):
 
     nombre_filas = [('Pliegue ' + str(i)) for i in range(1,11)]
 
-    metricas = ['neg_root_mean_squared_error', 'neg_mean_squared_error', 'neg_median_absolute_error']
     metricas = {'nrmse' : 'neg_root_mean_squared_error', 'negmse' : 'neg_mean_squared_error',
                 'nmae' : 'neg_median_absolute_error', 'MAPE' : get_MAPE }
 
     
     # Obtenemos los ''scores'', donde encontraremos los errores RMSE y MAE
     scores = cross_validate(best_estimator, X_train, y_train, cv = cv, scoring = metricas)
-    print(scores)
     
     RMSEs_train = []
     MSEs_train = []
     MAEs_train = []
     MAPEs_train = []
     # Los añadimos a la lista
-    RMSEs_train.append((-1) * scores['test_neg_root_mean_squared_error'])
-    MSEs_train.append((-1) * scores['test_neg_mean_squared_error'])
-    MAEs_train.append((-1) * scores['test_neg_median_absolute_error'])
-    MAPEs_train.append(scores['MAPE'])
+    RMSEs_train.append((-1) * scores['test_nrmse'])
+    MSEs_train.append((-1) * scores['test_negmse'])
+    MAEs_train.append((-1) * scores['test_nmae'])
+    MAPEs_train.append(scores['test_MAPE'])
 
     # Creamos un dataframe vacío con columnas los modelos y diez filas, correspondientes a los pliegues
     dfRMSE = pd.DataFrame(0, columns = [nombre], index = nombre_filas)
@@ -325,4 +278,4 @@ def crear_tabla_errores_cv_train_deep(best_estimator, X_train, y_train, cv, nomb
     for i in range(0, 1):
         dfMAPE.iloc[:,i] = MAPEs_train[i]
 
-    return dfRMSE,dfMSE,dfMAE,dfMAPE
+    return dfRMSE,dfMAE,dfMAPE
