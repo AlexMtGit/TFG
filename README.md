@@ -15,5 +15,4 @@ A su vez, el objetivo del TFG "Técnicas de Aprendizaje Automático para la pred
 - Generación de diferentes modelos LSTM.
 
 # Tareas pendientes
-- ¿Probar una búsqueda de hiper-parámetros más exhaustiva en un server con GPUs?
 - Comparar todos los modelos y seleccionar el mejor.
