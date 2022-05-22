@@ -14,6 +14,12 @@ from sklearn.model_selection import cross_val_score
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_validate
+
+import scipy.stats as stats;
+import scikit_posthocs as scp
+import statsmodels as st
+import operator
+
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -279,3 +285,62 @@ def crear_tabla_errores_cv_train(best_estimator, X_train, y_train, cv, nombre):
         dfMAPE.iloc[:,i] = MAPEs_train[i]
 
     return dfRMSE,dfMAE,dfMAPE
+
+def pairwise_test(df, parametric = True, method = 'bonferroni', decreasing = True, ties=True):
+    # Función que devuelve la matriz de rankings.
+    # El dataframe de entrada df debe tener los modelos en las columnas y 
+    # las medidas en las filas. 
+    # parametric = indica si se aplica un test paramétrico (ttest_rel) o no paramétrico (wilcoxon)
+    # decreasing = indica el sentido en el que es mejor la medida utilizada. 
+    # ties = indca si se incluyen los empates en el resultado final 
+    
+    if decreasing:
+        relate = operator.lt
+    else:
+        relate = operator.gt
+    
+    if parametric:
+        test = stats.ttest_rel
+    else:
+        test = stats.wilcoxon
+        
+    cols = df.columns
+    pvalues = np.array([])
+    significant = np.array([])
+    ranks = pd.DataFrame({"wins":np.zeros(len(cols)),
+                         "ties":np.zeros(len(cols)),
+                         "losses":np.zeros(len(cols))})
+    ranks.index= cols
+    for index1 in range(len(cols)):
+        for index2 in range(index1+1,len(cols)):
+            T,p = test(df.iloc[:,index1],df.iloc[:,index2])
+            #print(p)
+            #sig,padjust,a1,a2 = st.stats.multitest.multipletests(p,alpha = 0.05,method = method)
+            #print(index1,"--",index2,"-->",padjust)
+            pvalues = np.append(pvalues,p)
+    significant,padjust,a1,a2 = st.stats.multitest.multipletests(pvalues,alpha = 0.05,method = method)
+    # print(significant, padjust)
+    pos = 0;
+    for index1 in range(len(cols)):
+        for index2 in range(index1+1,len(cols)):
+            #print(significant[pos],"  ",padjust[pos])
+            if not significant[pos]:
+             #   print("Tie")
+                ranks.iloc[index1,1] = ranks.iloc[index1,1]+1
+                ranks.iloc[index2,1] = ranks.iloc[index2,1]+1
+            else:  
+                if relate(df.iloc[:,index1].mean(),df.iloc[:,index2].mean()):
+              #      print(index1," wins")
+                    ranks.iloc[index1,0] = ranks.iloc[index1,0]+1
+                    ranks.iloc[index2,2] = ranks.iloc[index2,2]+1
+                else:
+               #     print(index2," loses")
+                    ranks.iloc[index2,0] = ranks.iloc[index2,0]+1
+                    ranks.iloc[index1,2] = ranks.iloc[index1,2]+1
+            pos = pos + 1
+                
+    ranks["diff"] = ranks.wins-ranks.losses
+    #ranks = ranks.sort_values(by="diff",ascending = False)
+    if  not ties:
+        ranks.drop('ties',axis = 'columns', inplace = True)
+    return ranks.astype(int) 
