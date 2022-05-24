@@ -142,6 +142,17 @@ def regression_results(y_true, y_pred):
         cc = np.nan
     if not np.isnan(cc):
         print('CC: ', round(cc,3))
+        
+def get_test_prediction_errors(y_true, y_pred):
+    mse=metrics.mean_squared_error(y_true, y_pred)
+    rmse=np.sqrt(mse)
+        
+    mae=metrics.mean_absolute_error(y_true, y_pred)
+    
+    Valor_medio_y_true=np.average(y_true)
+    mape=100*mae/Valor_medio_y_true
+    
+    return rmse, mae, mape
     
 def desnormaliza_salida(df, train_size_, test_size_,y_scaled):
     
@@ -185,6 +196,8 @@ def grafica_resultado(model,title,df,train_size_, test_size_,show_scaled=True,sh
             plt.title(title+' - Resultados para Entrenamiento')
             plt.plot(x_index,y_train_prep, label='REAL')
             plt.plot(x_index,y_train_pred, label='PREDICCIÓN')
+            plt.xlabel("Fecha")
+            plt.ylabel("Consumo ($m^3$)")
             plt.legend()
             plt.show()
         else:
@@ -193,6 +206,8 @@ def grafica_resultado(model,title,df,train_size_, test_size_,show_scaled=True,sh
             plt.title(title+' - Resultados para Entrenamiento')
             plt.plot(x_index,y_train, label='REAL')
             plt.plot(x_index,y_pred_no_scaled.values, label='PREDICCIÓN')
+            plt.xlabel("Fecha")
+            plt.ylabel("Consumo ($m^3$)")
             plt.legend()
             plt.show()
         
@@ -205,6 +220,8 @@ def grafica_resultado(model,title,df,train_size_, test_size_,show_scaled=True,sh
             plt.title(title+' - Resultados para Test')
             plt.plot(x_index,y_test_prep, label='REAL')
             plt.plot(x_index,y_test_pred, label='PREDICCIÓN')
+            plt.xlabel("Fecha")
+            plt.ylabel("Consumo ($m^3$)")            
             plt.legend()
             plt.show()           
         else:
@@ -213,6 +230,8 @@ def grafica_resultado(model,title,df,train_size_, test_size_,show_scaled=True,sh
             plt.title(title+' - Resultados para Test')
             plt.plot(x_index,y_test, label='REAL')
             plt.plot(x_index,y_pred_no_scaled.values, label='PREDICCIÓN')
+            plt.xlabel("Fecha")
+            plt.ylabel("Consumo ($m^3$)")
             plt.legend()
             plt.show()
             
