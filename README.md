@@ -13,6 +13,5 @@ A su vez, el objetivo del TFG "Técnicas de Aprendizaje Automático para la pred
 - Generación de diferentes modelos MLP.
 - Generación de diferentes modelos CNN.
 - Generación de diferentes modelos LSTM.
-
-# Tareas pendientes
 - Comparar todos los modelos y seleccionar el mejor.
+
